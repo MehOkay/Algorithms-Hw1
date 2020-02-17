@@ -8,7 +8,7 @@ public class main {
 	public static int n = 5;
 	
 	public static Node grid[][] = new Node[n][n]; 
-	public static int solution[][] = new int[n][n];
+	//public static int solution[][] = new int[n][n];
 	
 	//Fills grid with legal moves according to N
 	public static void populate() {
@@ -53,9 +53,10 @@ public class main {
 	//each cell contains lowest number of moves to get to that cell
 	public static void evaluate() {
 		Queue<Node> q = new LinkedList<Node>();
+		//grid[0][0].visited = true;
+		grid[0][0].count = 0;
 		q.add(grid[0][0]);
 		int count = 0;
-		solution[0][0] = count;
 		
 		//BFS starting from first cell
 		while(!q.isEmpty()) {
@@ -64,41 +65,48 @@ public class main {
 			int y = cell.y; 
 			int move = cell.move;
 			
-			count++;
+			
 			//if BFS has reached the goal
 			if(x == n && y == n)
 			{
-				solution[5][5] = count;
+				grid[n][n].count = count;
 				return;
 			}
 			
-			//if BFS has hit the max number of moves
-			if(count == n * n)
+			if(count == n * n) {
 				return;
+			}
 			
 			if(!cell.visited) {
 				cell.visited = true;
-				solution[x][y] = count;
+				cell.count = count;
+				count++;
 				
 				//adds the cells to the queue
 				//check right
-				if(x + move < n)
+				if(x + move < n && !grid[x + move][y].visited) {
 					q.add(grid[x + move][y]);
+					
+				}
 				//check down
-				if(y + move < n) 
+				if(y + move < n && !grid[x][y + move].visited) {
 					q.add(grid[x][y + move]);
+					
+				}
 				//check left
-				if(x - move >= 0) 
+				if(x - move >= 0 && !grid[x - move][y].visited) { 
 					q.add(grid[x - move][y]);
+					
+					}
+				}
 				//check up
-				if(y - move >= 0) 
+				if((y - move >= 0) && !grid[x][y - move].visited) {
 					q.add(grid[x][y - move]);
+					
+				}
+				
 			}
-			//checks if each cell has the lowest count
-			else if(count < solution[x][y]) {
-				solution[x][y] = count;
-			}
-		}
+
 	}
 	
 	//call methods for each task here
@@ -107,17 +115,11 @@ public class main {
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				grid[i][j] = new Node();
+				grid[i][j].count = -1;
 			}
 		}
 		//give grid new values
 		populate();
-		
-		//initialize 2d array
-		//-1 is basically X
-		for (int i = 0; i < n; i++) {
-			for(int j = 0; j < n; j++)
-				solution[i][j] = -1;
-		}
 		
 		//check if grid has a solvable path
 		evaluate();
@@ -132,7 +134,12 @@ public class main {
 		System.out.println();
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				System.out.print(solution[i][j] + " ");
+				if (grid[i][j].count == -1) {
+					System.out.print("X ");
+				}
+				else {
+				System.out.print(grid[i][j].count + " ");
+				}
 			}
 			System.out.println();
 		}

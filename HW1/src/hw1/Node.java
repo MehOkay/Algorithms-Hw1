@@ -6,12 +6,14 @@ public class Node {
 	public int y;
 	public int move;
 	public boolean visited;
+	public int count;
 	
 	public Node() {
 		this.x = 0;
 		this.y = 0;
 		this.move = 0;
 		this.visited = false;
+		this.count = -1;
 	}
 	
 	public Node(int x, int y, int move){
