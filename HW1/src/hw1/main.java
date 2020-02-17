@@ -9,9 +9,6 @@ public class main {
 	
 	public static Node grid[][] = new Node[n][n]; 
 	
-	
-	//public static int solution[][] = new int[n][n];
-	
 	//Fills grid with legal moves according to N
 	public static void populate() {
 		for(int i = 0; i < n; i++) {
@@ -24,80 +21,32 @@ public class main {
 					break;
 				//repeats until cell is filled with a valid move
 				while (!valid) {
-					int count = 0;
+					int validMoves = 0;
 					
 					//random number between 0 to n-1
 					move = (int) (Math.random() * n) + 1; 
 					//System.out.print(" " + i + " " + j + " " + move + " ");
 					//if the cell can move to the right
 					if (i + move < n)
-						count++;
+						validMoves++;
 					//if the cell can move down
 					if (j + move < n)
-						count++;
+						validMoves++;
 					//if the cell can move left
 					if (i - move >= 0)
-						count++;
+						validMoves++;
 					//if the cell can move up
 					if (j - move >= 0)
-						count++;
+						validMoves++;
 					//if there are can valid moves
-					if (count > 0)
+					if (validMoves > 0)
 						valid = true; 
 				}
 				//fill cell with final Node
 				grid[i][j] = new Node(i,j,move);
 			}
 		}
-	}
-	
-	public static void evaluate(Queue<Node> q, int x, int y, int count) {
-		
-		grid[x][y].count = count;
-		Node cell = q.remove();
-		int move = grid[x][y].move;
-		
-		//if BFS has reached the goal
-		if(x == n && y == n)
-			return;
-		
-		if(q.isEmpty())
-			return;
-		
-		if(count == n * n) 
-			return;
-		
-		if(!cell.visited) {
-			cell.visited = true;
-			count++;
-			
-			//adds the cells to the queue
-			//check right
-			if(x + move < n && !grid[x + move][y].visited) {
-				q.add(grid[x + move][y]);
-				evaluate(q, x + move, y, count++);
-				
-			}
-			//check down
-			if(y + move < n && !grid[x][y + move].visited) {
-				q.add(grid[x][y + move]);
-				evaluate(q, x, y + move, count++);
-			}
-			//check left
-			if(x - move >= 0 && !grid[x - move][y].visited) { 
-				q.add(grid[x - move][y]);
-				evaluate(q, x - move, y, count++);
-			}
-			//check up
-			if((y - move >= 0) && !grid[x][y - move].visited) {
-				q.add(grid[x][y - move]);
-				evaluate(q, x, y - move, count++);
-			}
-			
-		}
-		
-	}
-	
+	}	
 	//creates 2d array
 	//each cell contains lowest number of moves to get to that cell
 	public static void evaluate() {
@@ -112,7 +61,9 @@ public class main {
 			Node cell = q.remove();
 			int x = cell.x;
 			int y = cell.y; 
+			int newCount = grid[x][y].count + 1;;
 			int move = cell.move;
+			count++;
 			
 			//if BFS has reached the goal
 			if(x == n && y == n)
@@ -121,41 +72,61 @@ public class main {
 				return;
 			}
 			
-			if(count == n * n) {
+			//Max number of counts
+			if(count == n * n)
 				return;
-			}
 			
 			if(!cell.visited) {
 				cell.visited = true;
-				count++;
 				
 				//adds the cells to the queue
 				//check right
 				if(x + move < n && !grid[x + move][y].visited) {
 					q.add(grid[x + move][y]);
-					grid[x + move][y].count = count;
+					//if target cell's count is greater than current count or is empty 
+					if(grid[x + move][y].count > newCount || grid[x + move][y].count == -1)
+					grid[x + move][y].count = newCount;
 					
 				}
 				//check down
 				if(y + move < n && !grid[x][y + move].visited) {
 					q.add(grid[x][y + move]);
-					grid[x][y + move].count = count;
+					//if target cell's count is greater than current count or is empty 
+					if(grid[x][y + move].count > newCount || grid[x][y + move].count == -1)
+					grid[x][y + move].count = newCount;
 				}
 				//check left
 				if(x - move >= 0 && !grid[x - move][y].visited) { 
 					q.add(grid[x - move][y]);
-					grid[x - move][y].count = count;
-					}
+					//if target cell's count is greater than current count or is empty 
+					if(grid[x - move][y].count > newCount || grid[x - move][y].count == -1)
+						grid[x - move][y].count = newCount;
 				}
 				//check up
 				if((y - move >= 0) && !grid[x][y - move].visited) {
 					q.add(grid[x][y - move]);
-					grid[x][y - move].count = count;
+					//if target cell's count is greater than current count or is empty 
+					if(grid[x][y - move].count > newCount || grid[x][y - move].count == -1)
+						grid[x][y - move].count = newCount;
 				}
 				
+				//Print each Step
+				System.out.println();
+				for (int i = 0; i < n; i++) {
+					for(int j = 0; j < n; j++) {
+						if (grid[i][j].count == -1) {
+							System.out.print("X ");
+						}
+						else {
+						System.out.print(grid[i][j].count + " ");
+						}
+					}
+					System.out.println();
+				}
 			}
-
+		}
 	}
+	
 	
 	//call methods for each task here
 	public static void main(String args[]) {
@@ -169,12 +140,10 @@ public class main {
 		//give grid new values
 		populate();
 		
-		Queue<Node> q = new LinkedList<Node>();
-		q.add(grid[0][0]);
-		
 		//check if grid has a solvable path
-		evaluate(q,0,0,0);
+		evaluate();
 		
+		System.out.println();
 		//print out grid and 2d array of paths
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
