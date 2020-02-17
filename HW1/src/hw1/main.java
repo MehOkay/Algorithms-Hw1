@@ -79,30 +79,30 @@ public class main {
 			
 			if(!cell.visited) {
 				cell.visited = true;
-				cell.count = count;
 				count++;
 				
 				//adds the cells to the queue
 				//check right
 				if(x + move < n && !grid[x + move][y].visited) {
 					q.add(grid[x + move][y]);
+					grid[x + move][y].count = count;
 					
 				}
 				//check down
 				if(y + move < n && !grid[x][y + move].visited) {
 					q.add(grid[x][y + move]);
-					
+					grid[x][y + move].count = count;
 				}
 				//check left
 				if(x - move >= 0 && !grid[x - move][y].visited) { 
 					q.add(grid[x - move][y]);
-					
+					grid[x - move][y].count = count;
 					}
 				}
 				//check up
 				if((y - move >= 0) && !grid[x][y - move].visited) {
 					q.add(grid[x][y - move]);
-					
+					grid[x][y - move].count = count;
 				}
 				
 			}
