@@ -8,6 +8,8 @@ public class main {
 	public static int n = 5;
 	
 	public static Node grid[][] = new Node[n][n]; 
+	
+	
 	//public static int solution[][] = new int[n][n];
 	
 	//Fills grid with legal moves according to N
@@ -49,6 +51,53 @@ public class main {
 		}
 	}
 	
+	public static void evaluate(Queue<Node> q, int x, int y, int count) {
+		
+		grid[x][y].count = count;
+		Node cell = q.remove();
+		int move = grid[x][y].move;
+		
+		//if BFS has reached the goal
+		if(x == n && y == n)
+			return;
+		
+		if(q.isEmpty())
+			return;
+		
+		if(count == n * n) 
+			return;
+		
+		if(!cell.visited) {
+			cell.visited = true;
+			count++;
+			
+			//adds the cells to the queue
+			//check right
+			if(x + move < n && !grid[x + move][y].visited) {
+				q.add(grid[x + move][y]);
+				evaluate(q, x + move, y, count++);
+				
+			}
+			//check down
+			if(y + move < n && !grid[x][y + move].visited) {
+				q.add(grid[x][y + move]);
+				evaluate(q, x, y + move, count++);
+			}
+			//check left
+			if(x - move >= 0 && !grid[x - move][y].visited) { 
+				q.add(grid[x - move][y]);
+				evaluate(q, x - move, y, count++);
+			}
+			//check up
+			if((y - move >= 0) && !grid[x][y - move].visited) {
+				q.add(grid[x][y - move]);
+				evaluate(q, x, y - move, count++);
+			}
+			
+		}
+		
+	}
+	
 	//creates 2d array
 	//each cell contains lowest number of moves to get to that cell
 	public static void evaluate() {
@@ -64,7 +113,6 @@ public class main {
 			int x = cell.x;
 			int y = cell.y; 
 			int move = cell.move;
-			
 			
 			//if BFS has reached the goal
 			if(x == n && y == n)
@@ -121,8 +169,11 @@ public class main {
 		//give grid new values
 		populate();
 		
+		Queue<Node> q = new LinkedList<Node>();
+		q.add(grid[0][0]);
+		
 		//check if grid has a solvable path
-		evaluate();
+		evaluate(q,0,0,0);
 		
 		//print out grid and 2d array of paths
 		for (int i = 0; i < n; i++) {
