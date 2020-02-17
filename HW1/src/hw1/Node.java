@@ -21,6 +21,7 @@ public class Node {
 		this.y = y;
 		this.move = move;
 		this.visited = false;
+		this.count = -1;
 	}
 	
 	public int getX() {
