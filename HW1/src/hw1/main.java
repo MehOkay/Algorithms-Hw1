@@ -3,6 +3,7 @@ package hw1;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Random;
 
 public class main { 
 	
@@ -116,6 +117,89 @@ public class main {
 		}
 	}
 	
+	public static int hillClimbing(Node grid[][], int n, int iter) {
+		//for number of iterations, change a random move value, evaluate grid, and save the better grid
+		
+		
+		Node oldGrid[][] = grid.clone();
+		Node tempGrid[][];
+		Random rand = new Random();
+		int oldEval = 0;
+		int newEval = 0;
+		long start = System.currentTimeMillis();
+		
+		//loop that iterates for input number of iterations
+		for (int i = 0; i < iter; i++) {
+			
+			//choosing random place on puzzle, if it's goal piece runs again
+			int randX = 0;
+			int randY = 0;
+			do {
+				randX = rand.nextInt(n-1);
+				randY = rand.nextInt(n-1);
+			}
+			while(randX == randY && randX == n-1);
+			
+			//assign new valid move to random place on puzzle
+			boolean valid = false;
+			int newMove = 1;
+			
+			while (!valid) {
+				int validMoves = 0;
+				
+				//random number between 0 to n-1
+				newMove = (int) (Math.random() * n) + 1; 
+				
+				//if the cell can move to the right
+				if (randX + newMove < n)
+					validMoves++;
+				//if the cell can move down
+				if (randY + newMove < n)
+					validMoves++;
+				//if the cell can move left
+				if (randX - newMove >= 0)
+					validMoves++;
+				//if the cell can move up
+				if (randY - newMove >= 0)
+					validMoves++;
+				//if there are can valid moves
+				if (validMoves > 0)
+					valid = true; 
+			}
+			
+			//save new move in puzzle
+			tempGrid = oldGrid.clone();
+			tempGrid[randX][randY].move = newMove;
+			
+			//evaluate old puzzle
+			oldEval = evaluate(oldGrid, n);
+			//evaluate new puzzle
+			newEval = evaluate(tempGrid, n);
+			//compare new evaluation to old evaluation and save if new matches old
+			if (newEval == oldEval) {
+				oldGrid = tempGrid.clone();
+			}
+			
+		}
+		long end = System.currentTimeMillis();
+		
+		//print new grid, value, and time to compute
+		for (int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				System.out.print(oldGrid[i][j].move + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("Optimized value: " + oldEval);
+		float sec = (end - start) / 1000F; 
+		System.out.println("Compute time: " + sec + " seconds");
+		
+		return oldEval;
+	}
+	
+	
+	
+	
 	
 	//call methods for each task here
 	public static void main(String args[]) {
@@ -123,8 +207,7 @@ public class main {
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		System.out.println("Enter a number for n: ");
 		int n = reader.nextInt(); // Scans the next token of the input as an int.
-		//once finished
-		reader.close();
+		
 		
 		//initialize grid
 		
@@ -163,6 +246,15 @@ public class main {
 			System.out.println();
 		}
 		
+		//hill climbing
+		System.out.println("Enter a number for iterations: ");
+		int iter = reader.nextInt(); // Scans the next token of the input as an int.
+		
+		hillClimbing(grid, n, iter);
+		
+		
+		//once finished
+		reader.close();
 	}
 	
 }
