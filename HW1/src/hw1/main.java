@@ -49,7 +49,8 @@ public class main {
 	}	
 	//creates 2d array
 	//each cell contains lowest number of moves to get to that cell
-	public static void evaluate() {
+	//returns value for evaluate function
+	public static int evaluate() {
 		Queue<Node> q = new LinkedList<Node>();
 		//grid[0][0].visited = true;
 		grid[0][0].count = 0;
@@ -65,16 +66,6 @@ public class main {
 			int move = cell.move;
 			count++;
 			
-			//if BFS has reached the goal
-			if(x == n && y == n)
-			{
-				grid[n][n].count = count;
-				return;
-			}
-			
-			//Max number of counts
-			if(count == n * n)
-				return;
 			
 			if(!cell.visited) {
 				cell.visited = true;
@@ -109,21 +100,23 @@ public class main {
 					if(grid[x][y - move].count > newCount || grid[x][y - move].count == -1)
 						grid[x][y - move].count = newCount;
 				}
+					
 				
-				//Print each Step
-				System.out.println();
-				for (int i = 0; i < n; i++) {
-					for(int j = 0; j < n; j++) {
-						if (grid[i][j].count == -1) {
-							System.out.print("X ");
-						}
-						else {
-						System.out.print(grid[i][j].count + " ");
-						}
+			}
+		}
+		if (grid[n-1][n-1].count > 0) {
+			return grid[n-1][n-1].count;
+		}
+		else {
+			int unreachables = 0;
+			for (int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					if (grid[i][j].count < 0) {
+						unreachables++;
 					}
-					System.out.println();
 				}
 			}
+			return unreachables;
 		}
 	}
 	
@@ -141,7 +134,7 @@ public class main {
 		populate();
 		
 		//check if grid has a solvable path
-		evaluate();
+		System.out.println(evaluate());
 		
 		System.out.println();
 		//print out grid and 2d array of paths
@@ -163,6 +156,7 @@ public class main {
 			}
 			System.out.println();
 		}
+		
 	}
 	
 }
