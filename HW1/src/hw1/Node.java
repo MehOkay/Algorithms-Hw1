@@ -7,6 +7,7 @@ public class Node {
 	public int move;
 	public boolean visited;
 	public int count;
+	public Node touchedBy;
 	
 	public Node() {
 		this.x = 0;

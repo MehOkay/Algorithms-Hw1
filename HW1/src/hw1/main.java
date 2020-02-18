@@ -15,8 +15,9 @@ public class main {
 				boolean valid = false;
 				int move = 0;
 				
-				if(i == n-1 && j == n-1)
-					break;
+				//if(i == n-1 && j == n-1)
+					//break;
+				
 				//repeats until cell is filled with a valid move
 				while (!valid) {
 					int validMoves = 0;
@@ -72,30 +73,38 @@ public class main {
 				if(x + move < n && !grid[x + move][y].visited) {
 					q.add(grid[x + move][y]);
 					//if target cell's count is greater than current count or is empty 
-					if(grid[x + move][y].count > newCount || grid[x + move][y].count == -1)
-					grid[x + move][y].count = newCount;
+					if(grid[x + move][y].count > newCount || grid[x + move][y].count == -1) {
+						grid[x + move][y].count = newCount;
+						grid[x + move][y].touchedBy = cell;
+					}
 					
 				}
 				//check down
 				if(y + move < n && !grid[x][y + move].visited) {
 					q.add(grid[x][y + move]);
 					//if target cell's count is greater than current count or is empty 
-					if(grid[x][y + move].count > newCount || grid[x][y + move].count == -1)
-					grid[x][y + move].count = newCount;
+					if(grid[x][y + move].count > newCount || grid[x][y + move].count == -1) {
+						grid[x][y + move].count = newCount;
+						grid[x][y + move].touchedBy = cell;
+					}
 				}
 				//check left
 				if(x - move >= 0 && !grid[x - move][y].visited) { 
 					q.add(grid[x - move][y]);
 					//if target cell's count is greater than current count or is empty 
-					if(grid[x - move][y].count > newCount || grid[x - move][y].count == -1)
+					if(grid[x - move][y].count > newCount || grid[x - move][y].count == -1) {
 						grid[x - move][y].count = newCount;
+						grid[x - move][y].touchedBy = cell;
+					}
 				}
 				//check up
 				if((y - move >= 0) && !grid[x][y - move].visited) {
 					q.add(grid[x][y - move]);
 					//if target cell's count is greater than current count or is empty 
-					if(grid[x][y - move].count > newCount || grid[x][y - move].count == -1)
+					if(grid[x][y - move].count > newCount || grid[x][y - move].count == -1) {
 						grid[x][y - move].count = newCount;
+						grid[x][y - move].touchedBy = cell;
+					}
 				}
 					
 				
@@ -197,7 +206,38 @@ public class main {
 		return oldEval;
 	}
 	
-	
+	public static void printOptimalPath(Node grid[][], int goalX, int goalY) {
+		LinkedList <Node> optPath = new LinkedList <Node>();
+		if (grid[goalX][goalY].count <= 0) {
+			return;
+		}
+		int size = grid.length - 1;
+		if (goalX <= size && goalY <= size) {
+			optPath.addFirst(grid[goalX][goalY]);
+		}
+		
+		//add path to linked list
+		while (optPath.peekFirst() != null) {
+			if (optPath.peekFirst().touchedBy != null) {
+				optPath.addFirst(optPath.getFirst().touchedBy);
+				
+			}
+			else {
+				break;
+			}
+		}
+		
+		//print ll
+		System.out.println("Optimal Path:");
+		int step = 0;
+		while (!optPath.isEmpty()) {
+			System.out.println("Step " + step + ": "+optPath.getFirst().x +", "+ optPath.getFirst().y);
+			optPath.removeFirst();
+			step++;
+		}
+			
+		return;
+	}
 	
 	
 	
@@ -233,7 +273,9 @@ public class main {
 			}
 			System.out.println();
 		}
+		
 		System.out.println();
+		//print BFS solution
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				if (grid[i][j].count == -1) {
@@ -245,6 +287,9 @@ public class main {
 			}
 			System.out.println();
 		}
+		
+		//print optimum path
+		printOptimalPath(grid, n-1, n-1);
 		
 		//hill climbing
 		System.out.println("Enter a number for iterations: ");
