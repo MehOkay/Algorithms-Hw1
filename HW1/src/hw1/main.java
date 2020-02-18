@@ -2,15 +2,12 @@ package hw1;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
-public class main {
-	
-	public static int n = 5;
-	
-	public static Node grid[][] = new Node[n][n]; 
+public class main { 
 	
 	//Fills grid with legal moves according to N
-	public static void populate() {
+	public static void populate(Node grid[][], int n) {
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				//System.out.println(i + " " + j);
@@ -50,12 +47,12 @@ public class main {
 	//creates 2d array
 	//each cell contains lowest number of moves to get to that cell
 	//returns value for evaluate function
-	public static int evaluate() {
+	public static int evaluate(Node grid[][], int n) {
 		Queue<Node> q = new LinkedList<Node>();
-		//grid[0][0].visited = true;
+		
 		grid[0][0].count = 0;
 		q.add(grid[0][0]);
-		int count = 0;
+	
 		
 		//BFS starting from first cell
 		while(!q.isEmpty()) {
@@ -64,7 +61,6 @@ public class main {
 			int y = cell.y; 
 			int newCount = grid[x][y].count + 1;;
 			int move = cell.move;
-			count++;
 			
 			
 			if(!cell.visited) {
@@ -123,7 +119,17 @@ public class main {
 	
 	//call methods for each task here
 	public static void main(String args[]) {
+		
+		Scanner reader = new Scanner(System.in);  // Reading from System.in
+		System.out.println("Enter a number for n: ");
+		int n = reader.nextInt(); // Scans the next token of the input as an int.
+		//once finished
+		reader.close();
+		
 		//initialize grid
+		
+		Node grid[][] = new Node[n][n];
+		
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				grid[i][j] = new Node();
@@ -131,10 +137,10 @@ public class main {
 			}
 		}
 		//give grid new values
-		populate();
+		populate(grid, n);
 		
 		//check if grid has a solvable path
-		System.out.println(evaluate());
+		System.out.println("Value: " + evaluate(grid, n));
 		
 		System.out.println();
 		//print out grid and 2d array of paths
