@@ -121,7 +121,7 @@ public class main {
 			for (int i = 0; i < n; i++) {
 				for(int j = 0; j < n; j++) {
 					if (grid[i][j].count < 0) {
-						unreachables++;
+						unreachables--;
 					}
 				}
 			}
@@ -174,7 +174,7 @@ public class main {
 				//if the cell can move up
 				if (randY - newMove >= 0)
 					validMoves++;
-				//if there are can valid moves
+				//if there are valid moves
 				if (validMoves > 0)
 					valid = true; 
 			}
@@ -183,13 +183,22 @@ public class main {
 			tempGrid = oldGrid.clone();
 			tempGrid[randX][randY].move = newMove;
 			
+			//clear cell.visited for both grids so evaluate actually runs
+			for (int p = 0; p < n; p++) {
+				for(int q = 0; q < n; q++) {
+					tempGrid[p][q].visited = false;
+					oldGrid[p][q].visited = false;
+				}
+			}
+			
 			//evaluate old puzzle
 			oldEval = evaluate(oldGrid, n);
 			//evaluate new puzzle
 			newEval = evaluate(tempGrid, n);
-			//compare new evaluation to old evaluation and save if new matches old
-			if (newEval == oldEval) {
+			//compare new evaluation to old evaluation and save if new better than old
+			if (newEval > oldEval) {
 				oldGrid = tempGrid.clone();
+				oldEval = newEval;
 			}
 			
 		}
@@ -248,6 +257,22 @@ public class main {
 				grid[i][j].heuristic = grid[n-1][n-1].count - grid[i][j].count;
 			}
 		}
+	}
+	
+	
+	
+	
+	public static void populationAlg(Node grid[][]) {
+		//create random population of size p
+		
+		//evaluate each puzzle
+		
+		//choose p/2 best puzzles -- selection
+		
+		//while current best is not solution
+			
+		//add p/2 random puzzles and loop
+		
 	}
 	
 	//exits after finding goal
@@ -325,7 +350,6 @@ public class main {
 		}
 		return 0;
 	}
-	
 	//call methods for each task here
 	public static void main(String args[]) {
 		
