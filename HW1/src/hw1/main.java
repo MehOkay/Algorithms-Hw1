@@ -2,6 +2,8 @@ package hw1;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -44,6 +46,7 @@ public class main {
 				//fill cell with final Node
 				grid[i][j] = new Node(i,j,move);
 			}
+			grid[n-1][n-1] = new Node(n-1,n-1,0);
 		}
 	}	
 	//creates 2d array
@@ -61,7 +64,7 @@ public class main {
 			Node cell = q.remove();
 			int x = cell.x;
 			int y = cell.y; 
-			int newCount = grid[x][y].count + 1;;
+			int newCount = grid[x][y].count + 1;
 			int move = cell.move;
 			
 			
@@ -239,7 +242,89 @@ public class main {
 		return;
 	}
 	
+	private static void setHeuristic(Node[][] grid, int n) {
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				grid[i][j].heuristic = grid[n-1][n-1].count - grid[i][j].count;
+			}
+		}
+	}
 	
+	//exits after finding goal
+	public static int aSearch(Node[][] grid, int n) {
+		
+		Comparator<Node> nodeComparator = new Comparator<Node>() {
+			@Override
+			public int compare(Node node1, Node node2) {
+				if(node1.heuristic < node2.heuristic)
+					return 1;
+				else if (node1.heuristic > node1.heuristic)
+					return -1;
+				return 0;
+			}
+		};
+
+		// reset grid
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				grid[i][j].visited = false;
+			}
+		}
+
+		PriorityQueue<Node> h = new PriorityQueue<>(nodeComparator);
+		grid[0][0].hCount = 0;
+		
+		h.add(grid[0][0]);
+
+		//A* Search from first cell
+		while (!h.isEmpty()) {
+			Node cell = h.remove();
+			int x = cell.x;
+			int y = cell.y;
+			int move = cell.move;
+			int newCount = grid[x][y].hCount + 1;
+
+			if (!cell.visited) {
+				cell.visited = true;
+
+				if (x + move < n && !grid[x + move][y].visited) {
+					h.add(grid[x + move][y]);
+					if (grid[x + move][y].hCount > newCount || grid[x + move][y].hCount == -1) {
+						grid[x + move][y].hCount = newCount;
+						grid[x + move][y].hTouchedBy = cell;
+					}
+				}
+
+				if (y + move < n && !grid[x][y + move].visited) {
+					h.add(grid[x][y + move]);
+					if (grid[x][y + move].hCount > newCount || grid[x][y + move].hCount == -1) {
+						grid[x][y + move].hCount = newCount;
+						grid[x][y + move].hTouchedBy = cell;
+					}
+				}
+
+				if (x - move >= 0 && !grid[x - move][y].visited) {
+					h.add(grid[x - move][y]);
+					if (grid[x - move][y].hCount > newCount || grid[x - move][y].hCount == -1) {
+						grid[x - move][y].hCount = newCount;
+						grid[x - move][y].hTouchedBy = cell;
+					}
+				}
+
+				if (y - move >= 0 && !grid[x][y - move].visited) {
+					h.add(grid[x][y - move]);
+					if (grid[x][y - move].hCount > newCount || grid[x][y - move].hCount == -1) {
+						grid[x][y - move].hCount = newCount;
+						grid[x][y - move].hTouchedBy = cell;
+					}
+				}
+				
+				if(x == n-1 && y == n-1)
+					return 0;
+			}
+		}
+		return 0;
+	}
 	
 	//call methods for each task here
 	public static void main(String args[]) {
@@ -250,7 +335,6 @@ public class main {
 		
 		
 		//initialize grid
-		
 		Node grid[][] = new Node[n][n];
 		
 		for (int i = 0; i < n; i++) {
@@ -286,6 +370,23 @@ public class main {
 				}
 			}
 			System.out.println();
+		}
+		
+		setHeuristic(grid,n);
+		aSearch(grid,n);
+		
+		System.out.println("a*\n");
+		//print A* solution
+		for (int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				if (grid[i][j].hCount == -1) {
+					System.out.print("X ");
+				}
+				else {
+				System.out.print(grid[i][j].hCount + " ");
+				}
+			}
+			System.out.println("");
 		}
 		
 		//print optimum path
