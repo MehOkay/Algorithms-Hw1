@@ -7,6 +7,7 @@ public class Node {
 	public int move;
 	public boolean visited;
 	public int count;
+	public int heuristic;
 	public Node touchedBy;
 	
 	public Node() {
@@ -15,6 +16,7 @@ public class Node {
 		this.move = 0;
 		this.visited = false;
 		this.count = -1;
+		this.heuristic = -1;
 	}
 	
 	public Node(int x, int y, int move){
@@ -23,6 +25,7 @@ public class Node {
 		this.move = move;
 		this.visited = false;
 		this.count = -1;
+		this.heuristic = -1;
 	}
 	
 	public int getX() {
