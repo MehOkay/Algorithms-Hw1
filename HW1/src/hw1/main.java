@@ -269,16 +269,152 @@ public class main {
 		}
 	}
 	
-	public static void populationAlg(Node grid[][]) {
-		//create random population of size p
+	public static int getIndexOfLargest( int[] array ) //this method from stackoverflow
+	{
+	  if ( array == null || array.length == 0 ) return -1; // null or empty
+
+	  int largest = 0;
+	  for ( int i = 1; i < array.length; i++ )
+	  {
+	      if ( array[i] > array[largest] ) largest = i;
+	  }
+	  return largest; // position of the first largest found
+	}
+	
+	public static void populationAlg(int n, double compTime) {
 		
-		//evaluate each puzzle
+		int iter = 1;
+		int first = 0;
+		int second = 0;
 		
-		//choose p/2 best puzzles -- selection
+		Node bestGrid[][] = new Node[n][n];
+		int allEvals[] = new int[4];
+		int bestEval = 0;
 		
-		//while current best is not solution
+		Node popGrids[][][] = new Node[4][n][n];
+		Node evolveGrids[][][] = new Node[4][n][n];
+		
+		//create random population of size 4
+		for (int i = 0; i < 4; i++) {
+			populate(popGrids[i], n);
+		}
+		
+		long start = System.currentTimeMillis();
+		
+		do {
 			
+		//evaluate each puzzle
+		for (int i = 0; i < 4; i++) {
+			allEvals[i] = evaluate(popGrids[i], n);
+		}
+		
+		//choose 2 best puzzles -- selection
+		first = getIndexOfLargest(allEvals);
+		bestEval = allEvals[first];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				bestGrid[i][j] = popGrids[first][i][j];
+				bestGrid[i][j].visited = false;
+			}
+		}
+		allEvals[first] = 0;
+		second = getIndexOfLargest(allEvals);
+		
+		//create 2 more puzzles with each half of the 2 best puzzles and put them all in evolveGrids
+		
+		//put first in evolveGrids[0]
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				evolveGrids[0][i][j] = popGrids[first][i][j];
+				evolveGrids[0][i][j].visited = false;
+			}
+		}
+		//put second in evolveGrids[1]
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				evolveGrids[1][i][j] = popGrids[second][i][j];
+				evolveGrids[1][i][j].visited = false;
+			}
+		}
+		//put first crossover in evolveGrids[2]
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i < n/2) {
+					evolveGrids[2][i][j] = popGrids[first][i][j];
+				}
+				else {
+					evolveGrids[2][i][j] = popGrids[second][i][j];
+				}
+				evolveGrids[2][i][j].visited = false;
+				
+			}
+		}
+		//put second crossover in evolveGrids[3]
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i < n/2) {
+					evolveGrids[3][i][j] = popGrids[second][i][j];
+				}
+				else {
+					evolveGrids[3][i][j] = popGrids[first][i][j];
+				}
+				evolveGrids[3][i][j].visited = false;
+			}
+		}
+			
+		//evaluate all puzzles
+		for (int i = 0; i < 4; i++) {
+			allEvals[i] = evaluate(evolveGrids[i], n);
+		}
+		
+		//choose 2 best puzzles -- selection
+		first = getIndexOfLargest(allEvals);
+		bestEval = allEvals[first];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				bestGrid[i][j] = evolveGrids[first][i][j];
+				bestGrid[i][j].visited = false;
+			}
+		}
+		allEvals[first] = 0;
+		second = getIndexOfLargest(allEvals);
+		
 		//add p/2 random puzzles and loop
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				for (int k = 0; k < 4; k++) {
+					if (k == 0) {
+					popGrids[k][i][j] = evolveGrids[first][i][j];
+					}
+					else if (k == 1) {
+						popGrids[k][i][j] = evolveGrids[second][i][j];
+					}
+					else {
+						 populate(popGrids[k], n);
+					}
+					popGrids[k][i][j].visited = false;
+				}
+			}
+		}
+		
+		iter++;
+			
+		} while (System.currentTimeMillis() - start < compTime*1000F);
+		
+		
+		long end = System.currentTimeMillis();
+		float sec = (end - start) / 1000F; 
+		System.out.println("Compute time: " + sec + " seconds");
+		
+		//print new grid, value, and time to compute
+		for (int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				System.out.print(bestGrid[i][j].move + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("Optimized value: " + bestEval);
+		System.out.println("Iterations: " + iter);
 		
 	}
 	
@@ -428,6 +564,8 @@ public class main {
 		int iter = reader.nextInt(); // Scans the next token of the input as an int.
 		
 		hillClimbing(workingGrid, n, iter);
+		
+		populationAlg(n, 4);
 		
 		
 		//once finished
