@@ -413,6 +413,7 @@ public class main {
 			}
 			System.out.println();
 		}
+		printOptimalPath(bestGrid, n-1, n-1);
 		System.out.println("Optimized value: " + bestEval);
 		System.out.println("Iterations: " + iter);
 		
@@ -565,7 +566,7 @@ public class main {
 		
 		hillClimbing(workingGrid, n, iter);
 		
-		populationAlg(n, 4);
+		populationAlg(n, 0.05);
 		
 		
 		//once finished
