@@ -3,6 +3,7 @@ package hw1;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.PriorityQueue;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Random;
@@ -133,11 +134,17 @@ public class main {
 		//for number of iterations, change a random move value, evaluate grid, and save the better grid
 		
 		
-		Node oldGrid[][] = grid.clone();
-		Node tempGrid[][];
+		Node oldGrid[][] = new Node[n][n];
+		Node tempGrid[][] = new Node[n][n];
+		
 		Random rand = new Random();
 		int oldEval = 0;
 		int newEval = 0;
+		for (int q = 0; q < n; q++) {
+			for (int w = 0; w < n; w++) {
+				oldGrid[q][w] = new Node(q, w, grid[q][w].move);
+			}
+		}
 		long start = System.currentTimeMillis();
 		
 		//loop that iterates for input number of iterations
@@ -179,27 +186,30 @@ public class main {
 					valid = true; 
 			}
 			
-			//save new move in puzzle
-			tempGrid = oldGrid.clone();
-			tempGrid[randX][randY].move = newMove;
-			
-			//clear cell.visited for both grids so evaluate actually runs
-			for (int p = 0; p < n; p++) {
-				for(int q = 0; q < n; q++) {
-					tempGrid[p][q].visited = false;
-					oldGrid[p][q].visited = false;
+			//create new temp to save move, clear visited for grids
+			for (int q = 0; q < n; q++) {
+				for (int w = 0; w < n; w++) {
+					oldGrid[q][w] = new Node(q, w, oldGrid[q][w].move);
+					tempGrid[q][w] = new Node(q, w, oldGrid[q][w].move);
 				}
 			}
+			
+			
+			//save new move
+			tempGrid[randX][randY].move = newMove;
+			
 			
 			//evaluate old puzzle
 			oldEval = evaluate(oldGrid, n);
 			//evaluate new puzzle
 			newEval = evaluate(tempGrid, n);
+			
 			//compare new evaluation to old evaluation and save if new better than old
-			if (newEval > oldEval) {
-				oldGrid = tempGrid.clone();
-				oldEval = newEval;
+			if (newEval >= oldEval) {
+				oldGrid[randX][randY].move = newMove;
+				
 			}
+
 			
 		}
 		long end = System.currentTimeMillis();
@@ -258,9 +268,6 @@ public class main {
 			}
 		}
 	}
-	
-	
-	
 	
 	public static void populationAlg(Node grid[][]) {
 		//create random population of size p
@@ -359,25 +366,25 @@ public class main {
 		
 		
 		//initialize grid
-		Node grid[][] = new Node[n][n];
+		Node workingGrid[][] = new Node[n][n];
 		
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				grid[i][j] = new Node();
-				grid[i][j].count = -1;
+				workingGrid[i][j] = new Node();
+				workingGrid[i][j].count = -1;
 			}
 		}
 		//give grid new values
-		populate(grid, n);
+		populate(workingGrid, n);
 		
 		//check if grid has a solvable path
-		System.out.println("Value: " + evaluate(grid, n));
+		System.out.println("Value: " + evaluate(workingGrid, n));
 		
 		System.out.println();
 		//print out grid and 2d array of paths
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				System.out.print(grid[i][j].move + " ");
+				System.out.print(workingGrid[i][j].move + " ");
 			}
 			System.out.println();
 		}
@@ -386,41 +393,41 @@ public class main {
 		//print BFS solution
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				if (grid[i][j].count == -1) {
+				if (workingGrid[i][j].count == -1) {
 					System.out.print("X ");
 				}
 				else {
-				System.out.print(grid[i][j].count + " ");
+				System.out.print(workingGrid[i][j].count + " ");
 				}
 			}
 			System.out.println();
 		}
 		
-		setHeuristic(grid,n);
-		aSearch(grid,n);
+		setHeuristic(workingGrid,n);
+		aSearch(workingGrid,n);
 		
 		System.out.println("a*\n");
 		//print A* solution
 		for (int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				if (grid[i][j].hCount == -1) {
+				if (workingGrid[i][j].hCount == -1) {
 					System.out.print("X ");
 				}
 				else {
-				System.out.print(grid[i][j].hCount + " ");
+				System.out.print(workingGrid[i][j].hCount + " ");
 				}
 			}
 			System.out.println("");
 		}
 		
 		//print optimum path
-		printOptimalPath(grid, n-1, n-1);
+		printOptimalPath(workingGrid, n-1, n-1);
 		
 		//hill climbing
 		System.out.println("Enter a number for iterations: ");
 		int iter = reader.nextInt(); // Scans the next token of the input as an int.
 		
-		hillClimbing(grid, n, iter);
+		hillClimbing(workingGrid, n, iter);
 		
 		
 		//once finished
