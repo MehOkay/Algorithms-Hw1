@@ -55,10 +55,14 @@ public class main {
 	//returns value for evaluate function
 	public static int evaluate(Node grid[][], int n) {
 		Queue<Node> q = new LinkedList<Node>();
-		
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				grid[i][j].visited = false;
+			}
+		}
 		grid[0][0].count = 0;
 		q.add(grid[0][0]);
-	
+		
 		
 		//BFS starting from first cell
 		while(!q.isEmpty()) {
@@ -214,16 +218,18 @@ public class main {
 		}
 		long end = System.currentTimeMillis();
 		
-		//print new grid, value, and time to compute
-		for (int i = 0; i < n; i++) {
-			for(int j = 0; j < n; j++) {
-				System.out.print(oldGrid[i][j].move + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("Optimized value: " + oldEval);
-		float sec = (end - start) / 1000F; 
-		System.out.println("Compute time: " + sec + " seconds");
+		/*
+				//print new grid, value, and time to compute
+				for (int i = 0; i < n; i++) {
+					for(int j = 0; j < n; j++) {
+						System.out.print(oldGrid[i][j].move + " ");
+					}
+					System.out.println();
+				}
+				System.out.println("Optimized value: " + oldEval);
+				float sec = (end - start) / 1000F; 
+				System.out.println("Compute time: " + sec + " seconds");
+		*/
 		
 		return oldEval;
 	}
@@ -281,11 +287,13 @@ public class main {
 	  return largest; // position of the first largest found
 	}
 	
-	public static void populationAlg(int n, double compTime) {
+	public static int populationAlg(int n, double compTime) {
 		
 		int iter = 1;
 		int first = 0;
 		int second = 0;
+		int initValue = 0;
+		int optChange = 0;
 		
 		Node bestGrid[][] = new Node[n][n];
 		int allEvals[] = new int[4];
@@ -311,6 +319,9 @@ public class main {
 		//choose 2 best puzzles -- selection
 		first = getIndexOfLargest(allEvals);
 		bestEval = allEvals[first];
+		if(iter == 1) {
+			initValue = bestEval;
+		}
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				bestGrid[i][j] = popGrids[first][i][j];
@@ -401,21 +412,25 @@ public class main {
 			
 		} while (System.currentTimeMillis() - start < compTime*1000F);
 		
-		
-		long end = System.currentTimeMillis();
-		float sec = (end - start) / 1000F; 
-		System.out.println("Compute time: " + sec + " seconds");
-		
-		//print new grid, value, and time to compute
-		for (int i = 0; i < n; i++) {
-			for(int j = 0; j < n; j++) {
-				System.out.print(bestGrid[i][j].move + " ");
+		/*	
+			long end = System.currentTimeMillis();
+			float sec = (end - start) / 1000F; 
+			System.out.println("Compute time: " + sec + " seconds");
+			
+			//print new grid, value, and time to compute
+			for (int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					System.out.print(bestGrid[i][j].move + " ");
+				}
+				System.out.println();
 			}
-			System.out.println();
-		}
-		printOptimalPath(bestGrid, n-1, n-1);
-		System.out.println("Optimized value: " + bestEval);
-		System.out.println("Iterations: " + iter);
+			printOptimalPath(bestGrid, n-1, n-1);
+			System.out.println("Optimized value: " + bestEval);
+			System.out.println("Iterations: " + iter);
+		*/
+		
+		optChange = bestEval - initValue;
+		return optChange;
 		
 	}
 	
