@@ -57,10 +57,13 @@ public class main {
 	public static int evaluate(Node grid[][], int n) {
 		Queue<Node> q = new LinkedList<Node>();
 		Queue<Node> path = new LinkedList<Node>();
-
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				grid[i][j].visited = false;
+			}
+		}
 		grid[0][0].count = 0;
 		q.add(grid[0][0]);
-
 		// BFS starting from first cell
 		while (!q.isEmpty()) {
 			Node cell = q.remove();
@@ -82,18 +85,19 @@ public class main {
 						grid[x + move][y].touchedBy = cell;
 						if (x + move == n - 1 && y == n - 1) {
 							Node pCell = cell;
-							while(pCell.touchedBy != null) {
+							while (pCell.touchedBy != null) {
 								path.add(pCell);
 								pCell = pCell.touchedBy;
 							}
-							
+
 							int pathLength = path.size() + 1;
 							while (!path.isEmpty()) {
 								pCell = path.remove();
-								if (grid[pCell.x][pCell.y].pathLength == -1 || grid[pCell.x][pCell.y].pathLength > pathLength)
+								if (grid[pCell.x][pCell.y].pathLength == -1
+										|| grid[pCell.x][pCell.y].pathLength > pathLength)
 									grid[pCell.x][pCell.y].pathLength = pathLength;
 							}
-							grid[n-1][n-1].pathLength = pathLength;
+							grid[n - 1][n - 1].pathLength = pathLength;
 						}
 
 					}
@@ -105,23 +109,24 @@ public class main {
 					if (grid[x][y + move].count > newCount || grid[x][y + move].count == -1) {
 						grid[x][y + move].count = newCount;
 						grid[x][y + move].touchedBy = cell;
-						if (x  == n - 1 && y + move == n - 1) {
+						if (x == n - 1 && y + move == n - 1) {
 							Node pCell = cell;
-							while(pCell.touchedBy != null) {
+							while (pCell.touchedBy != null) {
 								path.add(pCell);
 								pCell = pCell.touchedBy;
 							}
-							
+
 							int pathLength = path.size() + 1;
 							while (!path.isEmpty()) {
 								pCell = path.remove();
-								if (grid[pCell.x][pCell.y].pathLength == -1 || grid[pCell.x][pCell.y].pathLength > pathLength)
+								if (grid[pCell.x][pCell.y].pathLength == -1
+										|| grid[pCell.x][pCell.y].pathLength > pathLength)
 									grid[pCell.x][pCell.y].pathLength = pathLength;
 							}
-							grid[n-1][n-1].pathLength = pathLength;
+							grid[n - 1][n - 1].pathLength = pathLength;
 						}
 					}
-					
+
 				}
 				// check left
 				if (x - move >= 0 && !grid[x - move][y].visited) {
@@ -132,18 +137,19 @@ public class main {
 						grid[x - move][y].touchedBy = cell;
 						if (x - move == n - 1 && y == n - 1) {
 							Node pCell = cell;
-							while(pCell.touchedBy != null) {
+							while (pCell.touchedBy != null) {
 								path.add(pCell);
 								pCell = pCell.touchedBy;
 							}
-							
+
 							int pathLength = path.size() + 1;
 							while (!path.isEmpty()) {
 								pCell = path.remove();
-								if (grid[pCell.x][pCell.y].pathLength == -1 || grid[pCell.x][pCell.y].pathLength > pathLength)
+								if (grid[pCell.x][pCell.y].pathLength == -1
+										|| grid[pCell.x][pCell.y].pathLength > pathLength)
 									grid[pCell.x][pCell.y].pathLength = pathLength;
 							}
-							grid[n-1][n-1].pathLength = pathLength;
+							grid[n - 1][n - 1].pathLength = pathLength;
 						}
 					}
 				}
@@ -156,18 +162,19 @@ public class main {
 						grid[x][y - move].touchedBy = cell;
 						if (x == n - 1 && y - move == n - 1) {
 							Node pCell = cell;
-							while(pCell.touchedBy != null) {
+							while (pCell.touchedBy != null) {
 								path.add(pCell);
 								pCell = pCell.touchedBy;
 							}
-							
+
 							int pathLength = path.size() + 1;
 							while (!path.isEmpty()) {
 								pCell = path.remove();
-								if (grid[pCell.x][pCell.y].pathLength == -1 || grid[pCell.x][pCell.y].pathLength > pathLength)
+								if (grid[pCell.x][pCell.y].pathLength == -1
+										|| grid[pCell.x][pCell.y].pathLength > pathLength)
 									grid[pCell.x][pCell.y].pathLength = pathLength;
 							}
-							grid[n-1][n-1].pathLength = pathLength;
+							grid[n - 1][n - 1].pathLength = pathLength;
 						}
 					}
 				}
@@ -268,17 +275,13 @@ public class main {
 		}
 		long end = System.currentTimeMillis();
 
-		// print new grid, value, and time to compute
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				System.out.print(oldGrid[i][j].move + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("Optimized value: " + oldEval);
-		float sec = (end - start) / 1000F;
-		System.out.println("Compute time: " + sec + " seconds");
-
+		/*
+		 * //print new grid, value, and time to compute for (int i = 0; i < n; i++) {
+		 * for(int j = 0; j < n; j++) { System.out.print(oldGrid[i][j].move + " "); }
+		 * System.out.println(); } System.out.println("Optimized value: " + oldEval);
+		 * float sec = (end - start) / 1000F; System.out.println("Compute time: " + sec
+		 * + " seconds");
+		 */
 		return oldEval;
 	}
 
@@ -314,30 +317,6 @@ public class main {
 		return;
 	}
 
-	// reset visited prior
-	/*
-	 * public static int setPath(Node[][] grid, int n, int x, int y, int path) { if
-	 * (x == n - 1 && y == n - 1) { System.out.println("path reached: " + path);
-	 * return path; } if(path == n * n) return 200;
-	 * 
-	 * int move = grid[x][y].move; int pathLength = 50; if (!grid[x][y].visited) {
-	 * grid[x][y].visited = true;
-	 * 
-	 * path++; // check right if (x + move < n && !grid[x + move][y].visited) {
-	 * pathLength = setPath(grid, n, x + move, y, path); if (grid[x][y].pathLength
-	 * == -1 || grid[x][y].pathLength < pathLength) grid[x][y].pathLength =
-	 * pathLength; } // check down if (y + move < n && !grid[x][y + move].visited) {
-	 * pathLength = setPath(grid, n, x, y + move, path); if (grid[x][y].pathLength
-	 * == -1 || grid[x][y].pathLength < pathLength) grid[x][y].pathLength =
-	 * pathLength; } // check left if (x - move >= 0 && !grid[x - move][y].visited)
-	 * { pathLength = setPath(grid, n, x - move, y, path); if (grid[x][y].pathLength
-	 * == -1 || grid[x][y].pathLength < pathLength) grid[x][y].pathLength =
-	 * pathLength; } // check up if (y - move >= 0 && !grid[x][y - move].visited) {
-	 * pathLength = setPath(grid, n, x, y - move, path); if (grid[x][y].pathLength
-	 * == -1 || grid[x][y].pathLength < pathLength) grid[x][y].pathLength =
-	 * pathLength; } return pathLength; } else return 0; }
-	 */
-
 	private static void setHeuristic(Node[][] grid, int n) {
 		// reached goal: return path length
 		// reset grid
@@ -351,7 +330,7 @@ public class main {
 
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				if(grid[i][j].pathLength != -1)
+				if (grid[i][j].pathLength != -1)
 					grid[i][j].heuristic = grid[i][j].pathLength - grid[i][j].count;
 			}
 		}
@@ -370,11 +349,13 @@ public class main {
 		return largest; // position of the first largest found
 	}
 
-	public static void populationAlg(int n, double compTime) {
+	public static int populationAlg(int n, double compTime) {
 
 		int iter = 1;
 		int first = 0;
 		int second = 0;
+		int initValue = 0;
+		int optChange = 0;
 
 		Node bestGrid[][] = new Node[n][n];
 		int allEvals[] = new int[4];
@@ -400,6 +381,9 @@ public class main {
 			// choose 2 best puzzles -- selection
 			first = getIndexOfLargest(allEvals);
 			bestEval = allEvals[first];
+			if (iter == 1) {
+				initValue = bestEval;
+			}
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					bestGrid[i][j] = popGrids[first][i][j];
@@ -487,20 +471,8 @@ public class main {
 
 		} while (System.currentTimeMillis() - start < compTime * 1000F);
 
-		long end = System.currentTimeMillis();
-		float sec = (end - start) / 1000F;
-		System.out.println("Compute time: " + sec + " seconds");
-
-		// print new grid, value, and time to compute
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				System.out.print(bestGrid[i][j].move + " ");
-			}
-			System.out.println();
-		}
-		printOptimalPath(bestGrid, n - 1, n - 1);
-		System.out.println("Optimized value: " + bestEval);
-		System.out.println("Iterations: " + iter);
+		optChange = bestEval - initValue;
+		return optChange;
 
 	}
 
@@ -567,7 +539,7 @@ public class main {
 				}
 
 				// Reached Goal
-				if (x == n - 1 && y == n - 1) 
+				if (x == n - 1 && y == n - 1)
 					return 0;
 			}
 
@@ -644,7 +616,7 @@ public class main {
 				}
 
 				// Reached Goal
-				if (x == n - 1 && y == n - 1) 
+				if (x == n - 1 && y == n - 1)
 					return 0;
 			}
 		}
@@ -695,12 +667,12 @@ public class main {
 			}
 			System.out.println();
 		}
-		
+
 		long start = System.nanoTime();
 		spf(workingGrid, n);
 		long end = System.nanoTime();
-		System.out.println("SPF: " + (end-start) + " nanoseconds");
-		
+		System.out.println("SPF: " + (end - start) + " nanoseconds");
+
 		/*
 		 * //print SPF solution System.out.println("SPF"); for (int i = 0; i < n; i++) {
 		 * for(int j = 0; j < n; j++) { if (workingGrid[i][j].sCount == -1) {
@@ -724,8 +696,8 @@ public class main {
 		start = System.nanoTime();
 		aSearch(workingGrid, n);
 		end = System.nanoTime();
-		System.out.print("A*: " + (end-start) + " nanoseconds");
-		
+		System.out.print("A*: " + (end - start) + " nanoseconds");
+
 		System.out.println("SPF");
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
