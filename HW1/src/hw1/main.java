@@ -641,11 +641,8 @@ public class main {
 		}
 		// give grid new values
 		populate(workingGrid, n);
-
-		// check if grid has a solvable path
-		System.out.println("Value: " + evaluate(workingGrid, n));
-
-		System.out.println();
+		
+		System.out.println("Gameboard");
 		// print out grid and 2d array of paths
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -653,9 +650,10 @@ public class main {
 			}
 			System.out.println();
 		}
+		// check if grid has a solvable path
+		System.out.println("Value: " + evaluate(workingGrid, n));
 
-		System.out.println();
-
+		System.out.println("Evaluation grid");
 		// print Evaluation
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -672,32 +670,7 @@ public class main {
 		spf(workingGrid, n);
 		long end = System.nanoTime();
 		System.out.println("SPF: " + (end - start) + " nanoseconds");
-
-		/*
-		 * //print SPF solution System.out.println("SPF"); for (int i = 0; i < n; i++) {
-		 * for(int j = 0; j < n; j++) { if (workingGrid[i][j].sCount == -1) {
-		 * System.out.print("X "); } else { System.out.print(workingGrid[i][j].sCount +
-		 * " "); } } System.out.println(); }
-		 */
-		setHeuristic(workingGrid, n);
-
-		System.out.println("Heuristic Grid");
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (workingGrid[i][j].heuristic == -1) {
-					System.out.print("X ");
-				} else {
-					System.out.print(workingGrid[i][j].heuristic + " ");
-				}
-			}
-			System.out.println("");
-		}
-
-		start = System.nanoTime();
-		aSearch(workingGrid, n);
-		end = System.nanoTime();
-		System.out.print("A*: " + (end - start) + " nanoseconds");
-
+		
 		System.out.println("SPF");
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -710,6 +683,25 @@ public class main {
 			System.out.println("");
 		}
 
+		setHeuristic(workingGrid, n);
+
+		/*System.out.println("Heuristic Grid");
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (workingGrid[i][j].heuristic == -1) {
+					System.out.print("X ");
+				} else {
+					System.out.print(workingGrid[i][j].heuristic + " ");
+				}
+			}
+			System.out.println("");
+		}*/
+
+		start = System.nanoTime();
+		aSearch(workingGrid, n);
+		end = System.nanoTime();
+		System.out.println("A*: " + (end - start) + " nanoseconds");
+
 		// print A* solution
 		System.out.println("a*");
 		for (int i = 0; i < n; i++) {
@@ -717,7 +709,7 @@ public class main {
 				if (workingGrid[i][j].hCount == -1) {
 					System.out.print("X ");
 				} else {
-					System.out.print(workingGrid[i][j].hCount + " ");
+					System.out.print(workingGrid[i][j].hCount + " " );
 				}
 			}
 			System.out.println("");
