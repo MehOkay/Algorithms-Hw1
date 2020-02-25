@@ -9,8 +9,9 @@ public class Node {
 	public int count;
 	public int heuristic;
 	public int hCount;
+	public int sCount;
+	public int pathLength;
 	public Node touchedBy;
-	public Node hTouchedBy;
 	
 	public Node() {
 		this.x = 0;
@@ -20,6 +21,8 @@ public class Node {
 		this.count = -1;
 		this.heuristic = -1;
 		this.hCount = -1;
+		this.sCount = -1;
+		this.pathLength = -1;
 	}
 	
 	public Node(int x, int y, int move){
@@ -30,6 +33,8 @@ public class Node {
 		this.count = -1;
 		this.heuristic = -1;
 		this.hCount = -1;
+		this.sCount = -1;
+		this.pathLength = -1;
 	}
 	
 	public int getX() {
