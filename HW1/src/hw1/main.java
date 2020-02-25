@@ -317,7 +317,7 @@ public class main {
 		return;
 	}
 
-	private static void setHeuristic(Node[][] grid, int n) {
+	public static void setHeuristic(Node[][] grid, int n) {
 		// reached goal: return path length
 		// reset grid
 		for (int i = 0; i < n; i++) {
@@ -472,7 +472,7 @@ public class main {
 		} while (System.currentTimeMillis() - start < compTime * 1000F);
 
 		optChange = bestEval - initValue;
-		return optChange;
+		return bestEval;
 
 	}
 
@@ -630,6 +630,8 @@ public class main {
 		System.out.println("Enter a number for n: ");
 		int n = reader.nextInt(); // Scans the next token of the input as an int.
 
+		
+		
 		// initialize grid
 		Node workingGrid[][] = new Node[n][n];
 
@@ -665,6 +667,8 @@ public class main {
 			}
 			System.out.println();
 		}
+		
+		/*
 
 		long start = System.nanoTime();
 		spf(workingGrid, n);
@@ -685,7 +689,7 @@ public class main {
 
 		setHeuristic(workingGrid, n);
 
-		/*System.out.println("Heuristic Grid");
+		System.out.println("Heuristic Grid");
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (workingGrid[i][j].heuristic == -1) {
@@ -695,7 +699,7 @@ public class main {
 				}
 			}
 			System.out.println("");
-		}*/
+		}
 
 		start = System.nanoTime();
 		aSearch(workingGrid, n);
@@ -715,16 +719,28 @@ public class main {
 			System.out.println("");
 		}
 
-		// print optimum path
-		printOptimalPath(workingGrid, n - 1, n - 1);
+		
+
+*/
 
 		// hill climbing
 		System.out.println("Enter a number for iterations: ");
 		int iter = reader.nextInt(); // Scans the next token of the input as an int.
 
-		hillClimbing(workingGrid, n, iter);
+		System.out.println("Value: " + hillClimbing(workingGrid, n, iter));
+		
+		System.out.println("Gameboard");
+		// print out grid and 2d array of paths
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				System.out.print(workingGrid[i][j].move + " ");
+			}
+			System.out.println();
+		}
+		
+		// print optimum path
+		printOptimalPath(workingGrid, n - 1, n - 1);
 
-		populationAlg(n, 0.05);
 
 		// once finished
 		reader.close();
