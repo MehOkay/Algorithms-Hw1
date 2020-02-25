@@ -74,16 +74,18 @@ public class PlotData {
 				
 				for (int testN = 5; testN <= 11; testN += 2) {
 					n = testN;
-					for (testTime = 0.1; testTime <= 1.1; testTime += 0.1 ) {
-						System.out.println("\n" +"testing:" + testTime +"\n");
+					int iter = 0;
+					for (testTime = 0.01; testTime <= 0.1; testTime += 0.01 ) {
+						System.out.println("\n" +"testing:" + testTime);
 						for (int test = 0; test < 50; test++) {
 							//store result
-							System.out.print("w");
+							System.out.print(".");
 							optChanges[test] = main.populationAlg(n, testTime);
 						}
-						averages[(int)Math.round(testTime*10)] = average(optChanges);
+						averages[iter] = average(optChanges);
+						iter++;
 					}
-					System.out.println("n: " +testN+ " averages for 20 values of runtime");
+					System.out.println("n: " +testN+ " averages for 10 values of runtime");
 					System.out.println(Arrays.toString(averages));
 				}
 		  
